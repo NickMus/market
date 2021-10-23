@@ -14,11 +14,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 @Controller
 @RequestMapping("/shop")
@@ -102,14 +104,14 @@ public class ShopController {
     }
 
     @GetMapping("/cart/add/{id}")
-    public String addProductToCart(Model model, @PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+    public String addProductToCart(Model model, @PathVariable("id") Long id, HttpServletRequest httpServletRequest) throws IOException, TimeoutException, InterruptedException {
         shoppingCartService.addToCart(httpServletRequest.getSession(), id);
         String referrer = httpServletRequest.getHeader("referer");
         return "redirect:" + referrer;
     }
 
     @GetMapping("/order/fill")
-    public String orderFill(Model model, HttpServletRequest httpServletRequest, Principal principal) {
+    public String orderFill(Model model, HttpServletRequest httpServletRequest, Principal principal) throws IOException, TimeoutException {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -122,7 +124,7 @@ public class ShopController {
     }
 
     @PostMapping("/order/confirm")
-    public String orderConfirm(Model model, HttpServletRequest httpServletRequest, @ModelAttribute(name = "order") Order orderFromFrontend, Principal principal) {
+    public String orderConfirm(Model model, HttpServletRequest httpServletRequest, @ModelAttribute(name = "order") Order orderFromFrontend, Principal principal) throws IOException, TimeoutException {
         if (principal == null) {
             return "redirect:/login";
         }
