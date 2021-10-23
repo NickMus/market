@@ -11,9 +11,6 @@ import javax.servlet.http.HttpSession;
 public class ShoppingCartService {
     private ProductService productService;
 
-
-
-
     @Autowired
     public void setProductService(ProductService productService) {
         this.productService = productService;
