@@ -2,22 +2,30 @@ package com.geekbrains.geekmarketwinter.services;
 
 import com.geekbrains.geekmarketwinter.entites.Order;
 import com.geekbrains.geekmarketwinter.entites.OrderItem;
-import com.geekbrains.geekmarketwinter.entites.OrderStatus;
 import com.geekbrains.geekmarketwinter.entites.User;
 import com.geekbrains.geekmarketwinter.repositories.OrderRepository;
 import com.geekbrains.geekmarketwinter.utils.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rabbitmq.Receiver;
+import rabbitmq.Sender;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class OrderService {
     private OrderRepository orderRepository;
 
     private OrderStatusService orderStatusService;
+
+    private Sender sender;
+
+    private Receiver receiver;
+
 
     @Autowired
     public void setOrderRepository(OrderRepository orderRepository) {
@@ -30,7 +38,9 @@ public class OrderService {
     }
 
     @Transactional
-    public Order makeOrder(ShoppingCart cart, User user) {
+    public Order makeOrder(ShoppingCart cart, User user) throws IOException, TimeoutException {
+  //      sender.makeSenderMQRequest();
+      //  receiver.receiveMQRequest();
         Order order = new Order();
         order.setId(0L);
         order.setUser(user);

@@ -4,13 +4,19 @@ import com.geekbrains.geekmarketwinter.entites.Product;
 import com.geekbrains.geekmarketwinter.utils.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rabbitmq.Receiver;
+import rabbitmq.Sender;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class ShoppingCartService {
     private ProductService productService;
 
+    Sender sender = new Sender();
+    Receiver receiver = new Receiver();
 
 
 
@@ -32,9 +38,11 @@ public class ShoppingCartService {
         session.removeAttribute("cart");
     }
 
-    public void addToCart(HttpSession session, Long productId) {
+    public void addToCart(HttpSession session, Long productId) throws IOException, TimeoutException, InterruptedException {
+        sender.makeSenderMQRequest();
         Product product = productService.getProductById(productId);
         addToCart(session, product);
+        receiver.receiveMQRequest();
     }
 
     public void addToCart(HttpSession session, Product product) {
