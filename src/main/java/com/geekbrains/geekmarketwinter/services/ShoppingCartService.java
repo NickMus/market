@@ -38,11 +38,11 @@ public class ShoppingCartService {
         session.removeAttribute("cart");
     }
 
-    public void addToCart(HttpSession session, Long productId) throws IOException, TimeoutException {
+    public void addToCart(HttpSession session, Long productId) throws IOException, TimeoutException, InterruptedException {
         sender.makeSenderMQRequest();
-        receiver.receiveMQRequest();
         Product product = productService.getProductById(productId);
         addToCart(session, product);
+        receiver.receiveMQRequest();
     }
 
     public void addToCart(HttpSession session, Product product) {
